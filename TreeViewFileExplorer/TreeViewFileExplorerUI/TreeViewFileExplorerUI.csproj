@@ -113,5 +113,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TreeViewFileExplorerLibraryF\TreeViewFileExplorerLibrary.csproj">
+      <Project>{a740014c-5d72-455d-98b0-119de3b74072}</Project>
+      <Name>TreeViewFileExplorerLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
