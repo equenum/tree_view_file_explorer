@@ -12,9 +12,10 @@ namespace TreeViewFileExplorerUI.ViewModels
     {
         private readonly IFileSystemReader _fileSystemReader;
 
-        public ObservableCollection<FileTreeItemModel> FileSystem { get; set; } 
-        // TODO - Add application status
-        // TODO - Shell view window icon
+        public ObservableCollection<FileTreeItemModel> FileSystem { get; set; }
+        // TODO - Unit tests with build in test file system (xUnit)
+        // TODO - Async file system reading
+        // TODO - Implement worker thread pool pattern
 
         public ShellViewModel(IFileSystemReader fileSystemReader)
         {

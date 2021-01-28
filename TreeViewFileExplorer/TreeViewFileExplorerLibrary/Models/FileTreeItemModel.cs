@@ -11,7 +11,10 @@ namespace TreeViewFileExplorerLibrary.Models
     /// </summary>
     public class FileTreeItemModel
     {
-        // TODO - make bytes, kilobates other as constant fields
+        private const int BytesInKilobyte = 1024;
+        private const int BytesInMegabyte = 1048576;
+        private const int BytesInGigabyte = 1073741824;
+
         private long _size;
         private long _sizeForShow;
 
@@ -23,6 +26,9 @@ namespace TreeViewFileExplorerLibrary.Models
         /// Represents file tree item icon image uri.
         /// </summary>
         public string ImageUri { get; set; } 
+        /// <summary>
+        /// Represents file tree item sub (child) file trees.
+        /// </summary>
         public List<FileTreeItemModel> SubTrees { get; set; } = new List<FileTreeItemModel>();
         /// <summary>
         /// Represents file tree item size 
@@ -49,21 +55,21 @@ namespace TreeViewFileExplorerLibrary.Models
                 string size = _sizeForShow.ToString();
                 string sizeUnit = "B";
 
-                if (_sizeForShow > 1024 && _sizeForShow < 1048576)
+                if (_sizeForShow > BytesInKilobyte && _sizeForShow < BytesInMegabyte)
                 {
-                    decimal value = (decimal)_sizeForShow / 1024;
+                    decimal value = (decimal)_sizeForShow / BytesInKilobyte;
                     size = Math.Round(value, MidpointRounding.AwayFromZero).ToString();
                     sizeUnit = "KB";
                 }
-                else if (_sizeForShow > 1048576 && _sizeForShow < 1073741824)
+                else if (_sizeForShow > BytesInMegabyte && _sizeForShow < BytesInGigabyte)
                 {
-                    decimal value = (decimal)_sizeForShow / 1048576;
+                    decimal value = (decimal)_sizeForShow / BytesInMegabyte;
                     size = Math.Round(value, MidpointRounding.AwayFromZero).ToString();
                     sizeUnit = "MB";
                 }
-                else if (_sizeForShow > 1073741824)
+                else if (_sizeForShow > BytesInGigabyte)
                 {
-                    decimal value = (decimal)_sizeForShow / 1073741824;
+                    decimal value = (decimal)_sizeForShow / BytesInGigabyte;
                     size = Math.Round(value, 2, MidpointRounding.AwayFromZero).ToString();
                     sizeUnit = "GB";
                 }
