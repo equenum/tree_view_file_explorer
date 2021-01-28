@@ -4,56 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TreeViewFileExplorerUI.Views"
-        mc:Ignorable="d"
-        Title="ShellView" Height="450" Width="800">
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        Title="Tree View File Explorer" Height="450" Width="800">
+
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-
-        <DataGrid Grid.Row="0" Grid.Column="0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" MinWidth="100"/>
-            </DataGrid.Columns>
-        </DataGrid>
-
-        <DataGrid x:Name="GreedTreeView" AutoGenerateColumns="False" Grid.Row="0" Grid.Column="1">
-
-            <!--<DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=Size}" Header="Size" IsReadOnly="True" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=FreeSpace}" Header="Free space" IsReadOnly="True" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=Files}" Header="Files" IsReadOnly="True" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=Folders}" Header="Folders" IsReadOnly="True" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=folders}" Header="% of Parent (Allocated)" IsReadOnly="True" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=LastModified}" Header="Last Modified" IsReadOnly="True" Width="Auto"/>
-
-            </DataGrid.Columns>-->
-
-
-        </DataGrid>
-
-        <Button x:Name="Pusk" Width="200" Height="100" Background="Aqua" Content="ЖМИ" Click="Pusk_Click">
-
-        </Button>
-
-        <TreeView x:Name="WindowTreeView" Grid.Row="1" Grid.Column="0" MinWidth="100" ScrollViewer.CanContentScroll="True">
-
+       
+        <Button x:Name="LoadFileSystem" Width="100" Height="50" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Content="Push to Start" />
+        <TreeView x:Name="FileSystem" Grid.Row="1" Grid.Column="3" Width="640" Height="375" >
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=SubTrees}">
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=SubTrees}" >
                     <TextBlock>
-                        <TextBlock Text="{Binding Path=Name}"/>
-                        <TextBlock Text="{Binding Path=Size}"/>
-                        <TextBlock Text="{Binding Path=Files}"/>
+                        <Image Width="20" Margin="3" Source="{Binding ImageUri}" />
+                        <Label Content="{Binding Name}" VerticalAlignment="Center" />
+                        <Label Content="{Binding SizeForShow}" VerticalAlignment="Center" />
                     </TextBlock>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
-
         </TreeView>
     </Grid>
 </Window>

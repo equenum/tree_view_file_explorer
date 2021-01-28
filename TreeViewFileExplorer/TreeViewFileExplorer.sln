@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerUI", "TreeViewFileExplorerUI\TreeViewFileExplorerUI.csproj", "{C498B606-E28E-4713-81CA-DFB72D35A5DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerLibrary", "TreeViewFileExplorerLibraryF\TreeViewFileExplorerLibrary.csproj", "{A740014C-5D72-455D-98B0-119DE3B74072}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerLibrary", "TreeViewFileExplorerLibrary\TreeViewFileExplorerLibrary.csproj", "{A740014C-5D72-455D-98B0-119DE3B74072}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
