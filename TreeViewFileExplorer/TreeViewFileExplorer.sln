@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerUI", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerLibrary", "TreeViewFileExplorerLibrary\TreeViewFileExplorerLibrary.csproj", "{A740014C-5D72-455D-98B0-119DE3B74072}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerLibrary.UnitTests", "TreeViewFileExplorerLibrary.UnitTests\TreeViewFileExplorerLibrary.UnitTests.csproj", "{38FC0690-BD0F-4ECD-8A3B-DF96B161E223}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A740014C-5D72-455D-98B0-119DE3B74072}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A740014C-5D72-455D-98B0-119DE3B74072}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A740014C-5D72-455D-98B0-119DE3B74072}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38FC0690-BD0F-4ECD-8A3B-DF96B161E223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FC0690-BD0F-4ECD-8A3B-DF96B161E223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FC0690-BD0F-4ECD-8A3B-DF96B161E223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FC0690-BD0F-4ECD-8A3B-DF96B161E223}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

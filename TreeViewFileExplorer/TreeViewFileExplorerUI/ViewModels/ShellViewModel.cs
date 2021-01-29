@@ -10,13 +10,10 @@ using System.Threading;
 
 namespace TreeViewFileExplorerUI.ViewModels
 {
+    // TODO - Implement thread pool
+
     public class ShellViewModel : Screen
     {
-        // TODO - Unit tests with build in test file system (xUnit)
-        // TODO - Async file system reading +
-        // TODO - Implement worker thread pool ?
-        // TODO - Application status +
-
         private readonly IFileSystemReader _fileSystemReader;
 
         /// <summary>

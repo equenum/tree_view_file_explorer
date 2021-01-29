@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileSystemManagement\FileSystemReader.cs" />
-    <Compile Include="FileSystemManagement\IFileSystemReader.cs" />
+    <Compile Include="Utilities\FileSystemReader.cs" />
+    <Compile Include="Utilities\IFileSystemReader.cs" />
     <Compile Include="Models\FileTreeItemModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
