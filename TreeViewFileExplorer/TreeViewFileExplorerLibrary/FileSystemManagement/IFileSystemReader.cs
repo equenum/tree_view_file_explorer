@@ -9,6 +9,6 @@ namespace TreeViewFileExplorerLibrary.FileSystemManagement
 {
     public interface IFileSystemReader
     {
-        List<FileTreeItemModel> GetTreeInfo(string path);
+        Task<List<FileTreeItemModel>> GetTreeInfoAsync(string path);
     }
 }

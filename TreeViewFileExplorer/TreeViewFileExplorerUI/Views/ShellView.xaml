@@ -22,8 +22,8 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-       
-        <Button x:Name="LoadFileSystem" Width="100" Height="50" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Content="Push to Start" />
+
+        <Button x:Name="LoadFileSystem" Width="100" Height="50" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Content="{Binding Status}" />
         <TreeView x:Name="FileSystem" Grid.Row="1" Grid.Column="3" Width="640" Height="375" >
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=SubTrees}" >

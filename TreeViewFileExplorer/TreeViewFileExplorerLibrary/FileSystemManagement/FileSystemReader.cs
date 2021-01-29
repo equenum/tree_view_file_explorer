@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using TreeViewFileExplorerLibrary.FileSystemManagement;
 using TreeViewFileExplorerLibrary.Models;
 
@@ -10,37 +11,45 @@ namespace TreeViewFileExplorerLibrary
     /// <summary>
     /// Represents file system reader.
     /// </summary>
-    public class FileSystemReader : IFileSystemReader
+    public class FileSystemReader : IFileSystemReader 
     {
         /// <summary>
         /// Gets file system tree information.
         /// </summary>
         /// <param name="path">Target file system path.</param>
         /// <returns>File system tree information</returns>
-        public List<FileTreeItemModel> GetTreeInfo(string path)
+        public async Task<List<FileTreeItemModel>> GetTreeInfoAsync(string path)
         {
             var result = new List<FileTreeItemModel>();
 
             string[] rootDirectories = Directory.GetDirectories(path);
 
+            List<Task<FileTreeItemModel>> tasks = new List<Task<FileTreeItemModel>>();
+
             foreach (var directory in rootDirectories)
             {
-                var childTreeInfo = GetChildTreeInfo(directory);
-                result.Add(childTreeInfo);
+                tasks.Add(Task.Run(() => GetChildTreeInfo(directory)));
             }
 
-            var filesInfo = GetFilesInfo(path);
+            var filesInfoResults = await Task.WhenAll(tasks);
+
+            foreach (var item in filesInfoResults)
+            {
+                result.Add(item);
+            }
+
+            var filesInfo = await GetFilesInfoAsync(path);
             result.AddRange(filesInfo);
 
             return result;
         }
 
-        private FileTreeItemModel GetChildTreeInfo(string path)
+        private async Task<FileTreeItemModel> GetChildTreeInfo(string path) 
         {
             var result = new FileTreeItemModel();
 
-            var childDirectories = GetChildDirectoriesInfo(path);
-            var files = GetFilesInfo(path);
+            var childDirectories = await GetChildDirectoriesInfoAsync(path);
+            var files = await GetFilesInfoAsync(path);
 
             result.SubTrees.AddRange(childDirectories);
             result.SubTrees.AddRange(files);
@@ -51,37 +60,52 @@ namespace TreeViewFileExplorerLibrary
             return result;
         }
 
-        private List<FileTreeItemModel> GetChildDirectoriesInfo(string path)
+        private async Task<List<FileTreeItemModel>> GetChildDirectoriesInfoAsync(string path)
         {
             var result = new List<FileTreeItemModel>();
 
             var directories = GetDirectoriesWithGrantedAccess(path);
 
+            List<Task<FileTreeItemModel>> tasks = new List<Task<FileTreeItemModel>>();
+
             foreach (var directory in directories)
             {
-                var childTreeInfo = GetChildTreeInfo(directory);
-                result.Add(childTreeInfo);
+                tasks.Add(Task.Run(() => GetChildTreeInfo(directory)));
+            }
+
+            var childTreeInfoResults = await Task.WhenAll(tasks);
+
+            foreach (var item in childTreeInfoResults)
+            {
+                result.Add(item);
             }
 
             return result;
         }
 
-        private List<FileTreeItemModel> GetFilesInfo(string path)
+        private async Task<List<FileTreeItemModel>> GetFilesInfoAsync(string path)
         {
             var result = new List<FileTreeItemModel>();
 
             var files = GetFilesWithGrantedAcess(path);
 
+            List<Task<FileTreeItemModel>> tasks = new List<Task<FileTreeItemModel>>();
+
             foreach (var file in files)
             {
-                var fileInfo = GetSingleFileInfo(file);
-                result.Add(fileInfo);
+                tasks.Add(Task.Run(() => GetSingleFileInfo(file)));
             }
 
+            var fileInfoResults = await Task.WhenAll(tasks);
+
+            foreach (var item in fileInfoResults)
+            {
+                result.Add(item);
+            }
             return result;
         }
 
-        private FileTreeItemModel GetSingleFileInfo(string path)
+        private FileTreeItemModel GetSingleFileInfo(string path) 
         {
             var fileInfoHelper = new FileInfo(path);
 
