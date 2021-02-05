@@ -4,7 +4,7 @@ A simple application that can be used to keep an eye on your disk space and find
 This application has a the following architecture:
 
 - Presentation layer: WPF with MVVM (C#, XAML, .NET Framework);
-- Business layer: Class Library (C#, .NET Framework);
+- Business layer: Class Library (C#, .NET Framework).
 
 There are some additional project details (architecture, technologies/patterns used, etc.):
 - WPF UI with MVVM pattern (Caliburn.Micro);
