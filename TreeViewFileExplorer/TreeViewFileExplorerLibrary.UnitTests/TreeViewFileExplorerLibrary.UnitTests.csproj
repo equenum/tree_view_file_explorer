@@ -61,6 +61,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Test_FileSystemReader.cs" />
+    <Compile Include="Test_SizedFile.cs" />
+    <Compile Include="Test_SizedFolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TreeViewFileExplorerLibrary\TreeViewFileExplorerLibrary.csproj">

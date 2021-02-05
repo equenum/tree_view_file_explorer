@@ -9,114 +9,148 @@ using TreeViewFileExplorerLibrary.Models;
 namespace TreeViewFileExplorerLibrary
 {
     /// <summary>
-    /// Represents file system reader.
+    /// Represents a file system reader.
     /// </summary>
     public class FileSystemReader : IFileSystemReader 
     {
-        /// <summary>
-        /// Gets file system tree information.
-        /// </summary>
-        /// <param name="path">Target file system path.</param>
-        /// <returns>File system tree information</returns>
-        public async Task<List<FileTreeItemModel>> GetTreeInfoAsync(string path)
+        public List<string> FilePaths { get; set; }
+
+        public FileSystemReader()
         {
-            var result = new List<FileTreeItemModel>();
+            FilePaths = DriveInfo.GetDrives()
+                .Where(x => x.DriveType == DriveType.Fixed)
+                .Select(x => x.Name)
+                .ToList();
+        }
+        
+        public async Task<List<IFolderModel>> GetFileSystemTreeAsync() 
+        {
+            var resultFileSystemTrees = new List<IFolderModel>();
 
-            string[] rootDirectories = Directory.GetDirectories(path);
-
-            List<Task<FileTreeItemModel>> tasks = new List<Task<FileTreeItemModel>>();
-
-            foreach (var directory in rootDirectories)
+            foreach (var path in FilePaths)
             {
-                tasks.Add(Task.Run(() => GetChildTreeInfo(directory)));
+                var driveTree = new FolderModel
+                {
+                    Name = path,
+                    ChildTreeItems = await GetTreeInfoAsync(path),
+                    ImageUri = "/Images/drive.png"
+                };
+
+                driveTree.CalculateSize();
+
+                var sizedDriveTree = new SizedFolder(driveTree);
+                sizedDriveTree.SetSizeUnits();
+
+                resultFileSystemTrees.Add(sizedDriveTree);
             }
 
-            var filesInfoResults = await Task.WhenAll(tasks);
+            return resultFileSystemTrees;
+        }
 
-            foreach (var item in filesInfoResults)
+        private async Task<List<ITreeComponent>> GetTreeInfoAsync(string path)
+        {
+            var resultTreeInfo = new List<ITreeComponent>();
+
+            string[] rootFolders = Directory.GetDirectories(path);
+
+            List<Task<ITreeComponent>> tasks = new List<Task<ITreeComponent>>();
+
+            foreach (var folder in rootFolders)
             {
-                result.Add(item);
+                tasks.Add(Task.Run(() => GetChildFoldersInfo(folder)));
+            }
+
+            var childFoldersInfo = await Task.WhenAll(tasks);
+
+            foreach (var folderInfo in childFoldersInfo)
+            {
+                resultTreeInfo.Add(folderInfo);
             }
 
             var filesInfo = await GetFilesInfoAsync(path);
-            result.AddRange(filesInfo);
+            resultTreeInfo.AddRange(filesInfo);
 
-            return result;
+            return resultTreeInfo;
         }
 
-        private async Task<FileTreeItemModel> GetChildTreeInfo(string path) 
+        private async Task<ITreeComponent> GetChildFoldersInfo(string path) 
         {
-            var result = new FileTreeItemModel();
+            var resultFolder = new FolderModel();
 
-            var childDirectories = await GetChildDirectoriesInfoAsync(path);
+            var childDirectories = await GetFoldersInfoAsync(path);
             var files = await GetFilesInfoAsync(path);
 
-            result.SubTrees.AddRange(childDirectories);
-            result.SubTrees.AddRange(files);
-            result.Name = Path.GetFileName(path);
-            result.Size = result.SubTrees.Sum(x => x.Size);
-            result.ImageUri = "/Images/folder.png";
+            resultFolder.ChildTreeItems.AddRange(childDirectories);
+            resultFolder.ChildTreeItems.AddRange(files);
+            resultFolder.Name = Path.GetFileName(path);
+            resultFolder.CalculateSize();
 
-            return result;
+            var sizedResultFolder = new SizedFolder(resultFolder);
+            sizedResultFolder.SetSizeUnits();
+
+            return sizedResultFolder;
         }
 
-        private async Task<List<FileTreeItemModel>> GetChildDirectoriesInfoAsync(string path)
+        private async Task<List<ITreeComponent>> GetFoldersInfoAsync(string path)
         {
-            var result = new List<FileTreeItemModel>();
+            var resultFoldersInfo = new List<ITreeComponent>();
 
-            var directories = GetDirectoriesWithGrantedAccess(path);
+            var folders = GetAccessableFolders(path);
 
-            List<Task<FileTreeItemModel>> tasks = new List<Task<FileTreeItemModel>>();
+            List<Task<ITreeComponent>> tasks = new List<Task<ITreeComponent>>();
 
-            foreach (var directory in directories)
+            foreach (var folder in folders)
             {
-                tasks.Add(Task.Run(() => GetChildTreeInfo(directory)));
+                tasks.Add(Task.Run(() => GetChildFoldersInfo(folder)));
             }
 
-            var childTreeInfoResults = await Task.WhenAll(tasks);
+            var childFoldersInfo = await Task.WhenAll(tasks);
 
-            foreach (var item in childTreeInfoResults)
+            foreach (var folderInfo in childFoldersInfo)
             {
-                result.Add(item);
+                resultFoldersInfo.Add(folderInfo);
             }
 
-            return result;
+            return resultFoldersInfo;
         }
 
-        private async Task<List<FileTreeItemModel>> GetFilesInfoAsync(string path)
+        private async Task<List<ITreeComponent>> GetFilesInfoAsync(string path)
         {
-            var result = new List<FileTreeItemModel>();
+            var resultFilesInfo = new List<ITreeComponent>();
 
-            var files = GetFilesWithGrantedAcess(path);
+            var files = GetAccessableFiles(path);
 
-            List<Task<FileTreeItemModel>> tasks = new List<Task<FileTreeItemModel>>();
+            List<Task<ITreeComponent>> tasks = new List<Task<ITreeComponent>>();
 
             foreach (var file in files)
             {
                 tasks.Add(Task.Run(() => GetSingleFileInfo(file)));
             }
 
-            var fileInfoResults = await Task.WhenAll(tasks);
+            var filesInfo = await Task.WhenAll(tasks);
 
-            foreach (var item in fileInfoResults)
+            foreach (var fileInfo in filesInfo)
             {
-                result.Add(item);
+                resultFilesInfo.Add(fileInfo);
             }
-            return result;
+
+            return resultFilesInfo;
         }
 
-        private FileTreeItemModel GetSingleFileInfo(string path) 
+        private ITreeComponent GetSingleFileInfo(string path) 
         {
             var fileInfoHelper = new FileInfo(path);
 
-            var fileInfo = new FileTreeItemModel()
+            var fileInfo = new FileModel()
             {
                 Name = fileInfoHelper.Name,
-                Size = GetSingleFileSize(fileInfoHelper),
-                ImageUri = "/Images/file.png"
+                Size = GetSingleFileSize(fileInfoHelper)
             };
 
-            return fileInfo;
+            var sizedFile = new SizedFile(fileInfo);
+            sizedFile.SetSizeUnits();
+
+            return sizedFile;
         }
 
         /// <summary>
@@ -126,7 +160,7 @@ namespace TreeViewFileExplorerLibrary
         /// </summary>
         /// <param name="path">Full directory path.</param>
         /// <returns>Directory path(s) or empty array.</returns>
-        private string[] GetDirectoriesWithGrantedAccess(string path)
+        private string[] GetAccessableFolders(string path)
         {
             try
             {
@@ -145,7 +179,7 @@ namespace TreeViewFileExplorerLibrary
         /// </summary>
         /// <param name="path">Full file path.</param>
         /// <returns>File path(s) or empty array.</returns>
-        private string[] GetFilesWithGrantedAcess(string path)
+        private string[] GetAccessableFiles(string path)
         {
             try
             {
@@ -174,6 +208,16 @@ namespace TreeViewFileExplorerLibrary
             {
                 return 0;
             }
+        }
+
+        public void ClearFilePaths()
+        {
+            FilePaths.Clear();
+        }
+
+        public void AddFilePath(string path)
+        {
+            FilePaths.Add(path);
         }
     }
 }

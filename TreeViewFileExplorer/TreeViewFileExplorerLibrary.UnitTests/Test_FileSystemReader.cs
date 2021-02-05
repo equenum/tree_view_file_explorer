@@ -12,60 +12,51 @@ namespace TreeViewFileExplorerLibrary.UnitTests
     public class Test_FileSystemReader
     {
         [Fact]
-        public async void GetTreeInfoAsync_GetsTreeInfo()
+        public async void GetFileSystemTreeAsync_GetsFileSystemTreeInfo()
         {
             // Arrange
+
             string testDataPath = @"TestData";
 
-            // File system tree item
-            string fileSystemTreeItemName = @"TestData";
-            decimal fileSystemTreeItemSize = 30388;
-            int fileSystemTreeItemSubTreesCount = 4;
-            string fileSystemTreeItemImageUri = null;
+            // File system root folder
+            string fileSystemRootFolderName = @"TestData";
+            decimal fileSystemRootFolderSize = 30388;
+            int fileSystemRootFolderSubTreesCount = 4;
 
-            // Level 1 child tree item
-            string level1TreeItemName = "TestFolder1";
-            decimal level1TreeItemSize = 3274;
-            int level1TreeItemSubTreesCount = 1;
-            string level1TreeItemImageUri = "/Images/folder.png";
+            // File system level 1 child folder
+            string level1ChildFolderName = "TestFolder1";
+            decimal level1ChildFolderSize = 3274;
+            int level1ChildFolderSubTreesCount = 1;
 
-            // Level 2 child tree item
-            string level2TreeItemName = "TestFile1.txt";
-            decimal level2TreeItemSize = 3274;
-            int level2TreeItemSubTreesCount = 0;
-            string level2TreeItemImageUri = "/Images/file.png";
+            // File system level 2 child file
+            string level2ChildFileName = "TestFile1.txt";
+            decimal level2ChildFileSize = 3274;
 
             // Act
-            var fileReader = new FileSystemReader();
-            var fileInfoHelper = new FileInfo(testDataPath);
 
-            var fileSystem = new FileTreeItemModel
-            {
-                Name = fileInfoHelper.Name,
-                SubTrees = await fileReader.GetTreeInfoAsync(testDataPath)
-            };
-
-            fileSystem.Size = fileSystem.SubTrees.Sum(x => x.Size);
+            var fileSystemReader = new FileSystemReader();
+            fileSystemReader.ClearFilePaths();
+            fileSystemReader.AddFilePath(testDataPath);
+            
+            var fileSystem = await fileSystemReader.GetFileSystemTreeAsync();
+            SizedFolder level1Folder = (SizedFolder)fileSystem[0].ChildTreeItems[0];
+            SizedFile level2File = (SizedFile)level1Folder.ChildTreeItems[0];
 
             // Assert
 
-            // File system tree item
-            Assert.Equal(fileSystem.Name, fileSystemTreeItemName);
-            Assert.Equal(fileSystem.Size, fileSystemTreeItemSize);
-            Assert.Equal(fileSystem.SubTrees.Count, fileSystemTreeItemSubTreesCount);
-            Assert.Equal(fileSystem.ImageUri, fileSystemTreeItemImageUri);
+            // File system root folder
+            Assert.Equal(fileSystem[0].Name, fileSystemRootFolderName);
+            Assert.Equal(fileSystem[0].Size, fileSystemRootFolderSize);
+            Assert.Equal(fileSystem[0].ChildTreeItems.Count, fileSystemRootFolderSubTreesCount);
 
-            // Level 1 child tree item
-            Assert.Equal(fileSystem.SubTrees[0].Name, level1TreeItemName);
-            Assert.Equal(fileSystem.SubTrees[0].Size, level1TreeItemSize);
-            Assert.Equal(fileSystem.SubTrees[0].SubTrees.Count, level1TreeItemSubTreesCount);
-            Assert.Equal(fileSystem.SubTrees[0].ImageUri, level1TreeItemImageUri);
+            // File system level 1 child folder
+            Assert.Equal(level1Folder.Name, level1ChildFolderName);
+            Assert.Equal(level1Folder.Size, level1ChildFolderSize);
+            Assert.Equal(level1Folder.ChildTreeItems.Count, level1ChildFolderSubTreesCount);
 
-            // Level 2 child tree item
-            Assert.Equal(fileSystem.SubTrees[0].SubTrees[0].Name, level2TreeItemName);
-            Assert.Equal(fileSystem.SubTrees[0].SubTrees[0].Size, level2TreeItemSize);
-            Assert.Equal(fileSystem.SubTrees[0].SubTrees[0].SubTrees.Count, level2TreeItemSubTreesCount);
-            Assert.Equal(fileSystem.SubTrees[0].SubTrees[0].ImageUri, level2TreeItemImageUri);
+            // File system level 2 child file
+            Assert.Equal(level2File.Name, level2ChildFileName);
+            Assert.Equal(level2File.Size, level2ChildFileSize);
         }
     }
 }

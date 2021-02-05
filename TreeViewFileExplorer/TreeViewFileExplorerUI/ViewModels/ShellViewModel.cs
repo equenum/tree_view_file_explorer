@@ -10,52 +10,46 @@ using System.Threading;
 
 namespace TreeViewFileExplorerUI.ViewModels
 {
-    // TODO - Implement thread pool
-
     public class ShellViewModel : Screen
     {
+        private readonly SynchronizationContext _uiThreadContext;
         private readonly IFileSystemReader _fileSystemReader;
 
         /// <summary>
         /// Represents the entire file system.
         /// </summary>
-        public ObservableCollection<FileTreeItemModel> FileSystem { get; set; }
+        public ObservableCollection<ITreeComponent> FileSystem { get; set; }
         /// <summary>
         /// Represents current application status.
         /// </summary>
-        public string Status { get; set; } = "Push To Start";
+        public string Status { get; set; } = "Click To Start";
 
         public ShellViewModel(IFileSystemReader fileSystemReader)
         {
             _fileSystemReader = fileSystemReader;
-            FileSystem = new ObservableCollection<FileTreeItemModel>();
+            _uiThreadContext = SynchronizationContext.Current;
+            FileSystem = new ObservableCollection<ITreeComponent>();
 
             DisplayName = "Tree View File Explorer";
         }
         
-        public async Task LoadFileSystem()
+        public void GetFileSystem()
         {
             Status = "Loading...";
             NotifyOfPropertyChange(() => Status);
 
-            DriveInfo[] drives = DriveInfo.GetDrives().Where(x => x.DriveType == DriveType.Fixed).ToArray();
-
-            foreach (var drive in drives)
+            ThreadPool.QueueUserWorkItem(async (i) =>
             {
-                var driveFileTreeItem = new FileTreeItemModel
+                var fileSystemTrees = await _fileSystemReader.GetFileSystemTreeAsync();
+
+                foreach (var fileTree in fileSystemTrees)
                 {
-                    Name = drive.Name,
-                    SubTrees = await _fileSystemReader.GetTreeInfoAsync(drive.Name),
-                    ImageUri = "/Images/drive.png"
-                };
+                    _uiThreadContext.Send(x => FileSystem.Add(fileTree), null);
+                }
 
-                driveFileTreeItem.Size = driveFileTreeItem.SubTrees.Sum(x => x.Size);
-
-                FileSystem.Add(driveFileTreeItem);
-            }
-
-            Status = "Push To Refresh";
-            NotifyOfPropertyChange(() => Status);
+                Status = "Click To Refresh";
+                NotifyOfPropertyChange(() => Status);
+            });
         }
     }
 }

@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerLibrary
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewFileExplorerLibrary.UnitTests", "TreeViewFileExplorerLibrary.UnitTests\TreeViewFileExplorerLibrary.UnitTests.csproj", "{38FC0690-BD0F-4ECD-8A3B-DF96B161E223}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C9A1B0E2-522C-4C7E-A4E2-1D19DAB663F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F5507F0-827E-4C69-B960-9E12522065B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +34,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C498B606-E28E-4713-81CA-DFB72D35A5DA} = {5F5507F0-827E-4C69-B960-9E12522065B7}
+		{A740014C-5D72-455D-98B0-119DE3B74072} = {5F5507F0-827E-4C69-B960-9E12522065B7}
+		{38FC0690-BD0F-4ECD-8A3B-DF96B161E223} = {C9A1B0E2-522C-4C7E-A4E2-1D19DAB663F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07DD9788-06C1-4B49-B3B5-8E9769FC9F28}
