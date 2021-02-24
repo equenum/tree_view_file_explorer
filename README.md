@@ -1,7 +1,7 @@
 # tree_view_file_explorer
 A simple application that can be used to keep an eye on your disk space and find out where it has gone. It scans your drive file systems, providing a clear overview of each element (directory, file) size. The application can be useful in case you are trying to clean up hard disk space, monitor free space, find space hogs or just have an overview over file information.
 
-This application has a the following architecture:
+This application has the following architecture:
 
 - Presentation layer: WPF with MVVM (C#, XAML, .NET Framework);
 - Business layer: Class Library (C#, .NET Framework).
